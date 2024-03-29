@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model List<Transaction>
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <form asp-controller="Home" asp-action="UploadLogFileWithFecha" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="startDate">Fecha de inicio:</label>
+            <input type="date" class="form-control" id="startDate" name="startDate">
+        </div>
+        <div class="form-group">
+            <label for="endDate">Fecha de fin:</label>
+            <input type="date" class="form-control" id="endDate" name="endDate">
+        </div>
+        <div class="form-group">
+            <label for="logFile">Seleccionar archivo de log:</label>
+            <input type="file" class="form-control-file" id="logFile" name="logFile">
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+
+    <hr />
+
+    @if (Model != null && Model.Count > 0)
+{
+    <table>
+        <tr>
+                <td>
+                    <a href="@Url.Action("ExportToExcel", new {model=Model})" class="btn btn-primary">Exportar a Excel</a>
+                </td>
+        </tr>
+        <tr>
+                <td><strong>Rango de Fechas</strong></td>
+                <td><strong>Inicio:</strong> @ViewBag.FechaInicio.Date.ToShortDateString()</td>
+                <td><strong>Fin:</strong> @ViewBag.FechaFin.Date.ToShortDateString()</td>
+        </tr>
+    </table>    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Tipo</th>
+                <th>Monto</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model)
+            {
+                <tr>
+                    <td>@transaction.Date.ToShortDateString()</td>
+                    <td>@transaction.Time</td>
+                    <td>@transaction.Type</td>
+                    <td>@transaction.Amount.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Resumen</h2>
+
+    <p>Total de Depósitos: @ViewBag.TotalDeposits</p>
+    <p>Total de Retiros: @ViewBag.TotalWithdrawals</p>
+    <p>Saldo: @ViewBag.Balance</p>
+    }
+    else
+    {
+        <p>No se encontraron transacciones para el rango de fechas especificado.</p>
+    }
+</div>
